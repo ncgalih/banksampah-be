@@ -1,3 +1,4 @@
+const { default: sendMailTarikTunai } = require('../funtions/sendMailTarikTunai');
 const Nasabah = require('../models/nasabah');
 const Setor = require('../models/setor');
 
@@ -62,3 +63,26 @@ exports.lihatMutasi = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+exports.tarikTunai = async (req, res) => {
+    const { rfid_user, nominal } = req.body;
+  
+    try {
+        // Simpan permintaan tarik tunai ke database
+        const tarikTunai = new TarikTunai({ rfid_user, nominal });
+        await tarikTunai.save();
+    
+        // Ambil informasi nasabah
+        const nasabah = await Nasabah.findOne({ uid_rfid: rfid_user });
+        if (!nasabah) {
+          return res.status(404).json({ message: 'Nasabah tidak ditemukan' });
+        }
+        
+        // Notifikasi ke pengelola
+        sendMailTarikTunai(nasabah, nominal);
+    
+        res.status(201).json({ message: 'Permintaan tarik tunai berhasil diajukan', tarikTunai });
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+  }
