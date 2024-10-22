@@ -1,6 +1,7 @@
 const { default: sendMailTarikTunai } = require('../funtions/sendMailTarikTunai');
 const Nasabah = require('../models/nasabah');
 const Setor = require('../models/setor');
+const Tarik = require('../models/tarik');
 
 // Transaksi setor
 exports.setorSampah = async (req, res) => {
@@ -69,7 +70,7 @@ exports.tarikTunai = async (req, res) => {
   
     try {
         // Simpan permintaan tarik tunai ke database
-        const tarikTunai = new TarikTunai({ rfid_user, nominal });
+        const tarikTunai = new Tarik({ rfid_user, nominal });
         await tarikTunai.save();
     
         // Ambil informasi nasabah
@@ -79,7 +80,7 @@ exports.tarikTunai = async (req, res) => {
         }
         
         // Notifikasi ke pengelola
-        sendMailTarikTunai(nasabah, nominal);
+        //sendMailTarikTunai(nasabah, nominal);
     
         res.status(201).json({ message: 'Permintaan tarik tunai berhasil diajukan', tarikTunai });
     } catch (error) {

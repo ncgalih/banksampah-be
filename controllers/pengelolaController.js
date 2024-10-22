@@ -64,7 +64,31 @@ exports.setujuTarikTunai = async (req, res) => {
 
   exports.lihatTransaksiTarik = async (req, res) => {
     try {
-      const transaksiTarik = await Tarik.find().populate('rfid_user', 'nama alamat');
+      const transaksiTarik = await Tarik.aggregate([
+        {
+          $lookup: {
+            from: 'nasabahs', // Nama koleksi Nasabah (harus plural)
+            localField: 'rfid_user', // Field di Tarik
+            foreignField: 'uid_rfid', // Field di Nasabah
+            as: 'userDetails' // Nama output
+          }
+        },
+        {
+          $unwind: '$userDetails' // Memecah array agar bisa diakses
+        },
+        {
+          $addFields: {
+            nama: '$userDetails.nama', // Menambahkan field nama ke dokumen utama
+            alamat: '$userDetails.alamat' // Menambahkan field alamat ke dokumen utama
+          }
+        },
+        {
+          $project: {
+            userDetails: 0 // Menghapus field userDetails dari hasil akhir
+          }
+        }
+      ]);
+      
       res.json(transaksiTarik);
     } catch (error) {
       res.status(400).json({ message: error.message });

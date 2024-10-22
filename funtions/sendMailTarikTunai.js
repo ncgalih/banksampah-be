@@ -1,4 +1,4 @@
-export default function sendMailTarikTunai(nasabah, nominal){
+function sendMailTarikTunai(nasabah, nominal){
     // Kirim notifikasi email ke pengelola
   const transporter = nodemailer.createTransport({
     service: 'gmail', // Misalnya menggunakan Gmail
@@ -23,3 +23,5 @@ export default function sendMailTarikTunai(nasabah, nominal){
     console.log('Email sent: ' + info.response);
   });
 }
+
+module.exports = sendMailTarikTunai;

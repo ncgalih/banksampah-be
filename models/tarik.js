@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const TarikSchema = new mongoose.Schema({
   rfid_user: { 
-    type: mongoose.Schema.Types.ObjectId, 
+    type: String, 
     ref: 'Nasabah', // Referensi ke model Nasabah
     required: true 
   },
