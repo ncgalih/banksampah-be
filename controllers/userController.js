@@ -1,4 +1,4 @@
-const { default: sendMailTarikTunai } = require('../funtions/sendMailTarikTunai');
+const { sendMailTarikTunai } = require('../funtions/sendMailTarikTunai');
 const Nasabah = require('../models/nasabah');
 const Setor = require('../models/setor');
 const Tarik = require('../models/tarik');
@@ -80,7 +80,7 @@ exports.tarikTunai = async (req, res) => {
         }
         
         // Notifikasi ke pengelola
-        //sendMailTarikTunai(nasabah, nominal);
+        sendMailTarikTunai(nasabah, nominal);
     
         res.status(201).json({ message: 'Permintaan tarik tunai berhasil diajukan', tarikTunai });
     } catch (error) {

@@ -62,6 +62,25 @@ exports.setujuTarikTunai = async (req, res) => {
     }
   }
 
+exports.tolakTarikTunai = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const tarikTunai = await Tarik.findById(id);
+      if (!tarikTunai || tarikTunai.status != 'pending') {
+        return res.status(404).json({ message: 'Permintaan tidak ditemukan atau sudah disetujui' });
+      }
+      
+      // Ubah status menjadi completed
+      tarikTunai.status = 'declined';
+      await tarikTunai.save();
+  
+      res.json({ message: 'Permintaan tarik tunai ditolak', tarikTunai });
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
   exports.lihatTransaksiTarik = async (req, res) => {
     try {
       const transaksiTarik = await Tarik.aggregate([

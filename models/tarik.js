@@ -8,7 +8,7 @@ const TarikSchema = new mongoose.Schema({
     required: true 
   },
   nominal: { type: Number, required: true },
-  status: { type: String, enum: ['pending', 'completed'], default: 'pending' },
+  status: { type: String, enum: ['pending', 'completed', 'declined'], default: 'pending' },
   created_at: { type: Date, default: Date.now }
 });
 
