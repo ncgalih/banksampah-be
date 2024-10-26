@@ -3,6 +3,20 @@ const Nasabah = require('../models/nasabah');
 const Setor = require('../models/setor');
 const Tarik = require('../models/tarik');
 
+//login
+exports.login = async (req, res) => {
+  try {
+    const { uid_rfid } = req.params;
+
+    const nasabah = await Nasabah.findOne({ uid_rfid });
+    if (!nasabah) return res.status(404).json({ error: 'Nasabah tidak ditemukan' });
+
+    res.status(200).json(nasabah);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
 // Transaksi setor
 exports.setorSampah = async (req, res) => {
   try {
