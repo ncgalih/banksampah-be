@@ -31,7 +31,7 @@ exports.setorSampah = async (req, res) => {
 
     // Simpan transaksi setor
     const setor = new Setor({
-      rfid_nasabah: nasabah._id,
+      rfid_nasabah: uid_rfid,
       jenis_sampah,
       berat,
       harga_jenis,
@@ -69,13 +69,64 @@ exports.lihatMutasi = async (req, res) => {
   try {
     const { uid_rfid } = req.params;
 
-    const nasabah = await Nasabah.findOne({ uid_rfid });
-    if (!nasabah) return res.status(404).json({ error: 'Nasabah tidak ditemukan' });
+    // Ambil saldo terakhir dari user
+    const user = await Nasabah.findOne({ uid_rfid });
+    if (!user) {
+      return res.status(404).json({ error: 'User tidak ditemukan.' });
+    }
 
-    const mutasi = await Setor.find({ rfid_nasabah: nasabah._id });
-    res.status(200).json(mutasi);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    // Ambil data tarik tunai dan setor tunai berdasarkan rfid_user
+    const tarikTunai = await Tarik.find({ rfid_user: uid_rfid });
+    const setorTunai = await Setor.find({ rfid_nasabah: uid_rfid });
+
+    // Gabungkan data tarik tunai dan setor tunai dalam bentuk mutasi
+    const mutasi = [
+      ...tarikTunai.map(tarik => ({
+        tanggal: tarik.created_at,
+        setor: null,
+        tarik: tarik.nominal,
+        status: tarik.status
+      })),
+      ...setorTunai.map(setor => ({
+        tanggal: setor.created_at,
+        setor: setor.kredit,
+        tarik: null,
+        status: "completed"
+      }))
+    ];
+
+    // Urutkan data mutasi berdasarkan tanggal dan ambil 6 data terakhir
+    mutasi.sort((a, b) => new Date(a.tanggal) - new Date(b.tanggal));
+    const mutasiTerakhir = mutasi.slice(-6);
+
+    // Mulai dari saldo akhir sebagai titik awal, lalu hitung mundur
+    let saldo = user.saldo;
+    let nextsaldo = user.saldo;
+    const tabelMutasi = mutasiTerakhir
+      .reverse() // Balik urutan untuk menghitung mundur dari saldo akhir
+      .map(transaksi => {
+        saldo = nextsaldo;
+        if (transaksi.setor) {
+          nextsaldo -= transaksi.setor;
+        } else if (transaksi.tarik && transaksi.status === 'completed') {
+          nextsaldo += transaksi.tarik;
+        }
+
+        return {
+          tanggal: transaksi.tanggal.toLocaleString(),
+          setor: transaksi.setor || 0,
+          tarik: transaksi.tarik || 0,
+          status: transaksi.status,
+          saldo: saldo
+        };
+      })
+      .reverse(); // Kembalikan ke urutan tanggal awal ke akhir
+
+    // Kembalikan data dalam bentuk JSON
+    res.json(tabelMutasi);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Terjadi kesalahan saat mengambil data mutasi.', error });
   }
 };
 

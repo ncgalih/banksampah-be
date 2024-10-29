@@ -29,7 +29,30 @@ exports.daftarNasabah = async (req, res) => {
 // Lihat seluruh transaksi
 exports.lihatSeluruhTransaksi = async (req, res) => {
   try {
-    const transaksi = await Setor.find().populate('rfid_nasabah', 'nama');
+    const transaksi = await Setor.aggregate([
+      {
+        $lookup: {
+          from: 'nasabahs', // Nama koleksi Nasabah (harus plural)
+          localField: 'rfid_nasabah', // Field di Tarik
+          foreignField: 'uid_rfid', // Field di Nasabah
+          as: 'userDetails' // Nama output
+        }
+      },
+      {
+        $unwind: '$userDetails' // Memecah array agar bisa diakses
+      },
+      {
+        $addFields: {
+          nama: '$userDetails.nama', // Menambahkan field nama ke dokumen utama
+          alamat: '$userDetails.alamat' // Menambahkan field alamat ke dokumen utama
+        }
+      },
+      {
+        $project: {
+          userDetails: 0 // Menghapus field userDetails dari hasil akhir
+        }
+      }
+    ]);
     res.status(200).json(transaksi);
   } catch (err) {
     res.status(500).json({ error: err.message });

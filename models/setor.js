@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const setorSchema = new mongoose.Schema({
-  rfid_nasabah: { type: mongoose.Schema.Types.ObjectId, ref: 'Nasabah', required: true },
+  rfid_nasabah: { type: String, ref: 'Nasabah', required: true },
   jenis_sampah: { type: String, required: true },
   berat: { type: Number, required: true },
   harga_jenis: { type: Number, required: true },
