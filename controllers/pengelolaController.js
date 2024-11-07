@@ -15,9 +15,9 @@ exports.lihatNasabah = async (req, res) => {
 // Daftarkan nasabah baru
 exports.daftarNasabah = async (req, res) => {
   try {
-    const { nama, alamat, uid_rfid } = req.body;
+    const { nama, alamat, uid_rfid, bank, no_rekening } = req.body;
 
-    const nasabahBaru = new Nasabah({ nama, alamat, uid_rfid });
+    const nasabahBaru = new Nasabah({ nama, alamat, uid_rfid, bank, no_rekening });
     await nasabahBaru.save();
 
     res.status(201).json({ message: 'Nasabah baru berhasil didaftarkan' });
@@ -43,8 +43,8 @@ exports.lihatSeluruhTransaksi = async (req, res) => {
       },
       {
         $addFields: {
-          nama: '$userDetails.nama', // Menambahkan field nama ke dokumen utama
-          alamat: '$userDetails.alamat' // Menambahkan field alamat ke dokumen utama
+          nama: '$userDetails.nama',
+          alamat: '$userDetails.alamat' ,
         }
       },
       {
@@ -121,7 +121,9 @@ exports.tolakTarikTunai = async (req, res) => {
         {
           $addFields: {
             nama: '$userDetails.nama', // Menambahkan field nama ke dokumen utama
-            alamat: '$userDetails.alamat' // Menambahkan field alamat ke dokumen utama
+            alamat: '$userDetails.alamat', // Menambahkan field alamat ke dokumen utama
+            bank: '$userDetails.bank',
+            no_rekening: '$userDetails.no_rekening'
           }
         },
         {
