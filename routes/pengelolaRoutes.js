@@ -8,5 +8,6 @@ router.get('/transaksi', pengelolaController.lihatSeluruhTransaksi);
 router.post('/setuju-tarik-tunai/:id', pengelolaController.setujuTarikTunai);
 router.post('/tolak-tarik-tunai/:id', pengelolaController.tolakTarikTunai);
 router.get('/tarik', pengelolaController.lihatTransaksiTarik)
+router.post('/cancel-setor/:id', pengelolaController.cancelTransaksi);
 
 module.exports = router;

@@ -59,6 +59,31 @@ exports.lihatSeluruhTransaksi = async (req, res) => {
   }
 };
 
+exports.cancelTransaksi = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const transaksi = await Setor.findById(id);
+    if (!transaksi) {
+      return res.status(404).json({ message: 'Tidak ada' });
+    }
+
+    // Kurangi saldo nasabah
+    const nasabah = await Nasabah.findOne({ uid_rfid: transaksi.rfid_nasabah });
+    if (nasabah) {
+      nasabah.saldo -= transaksi.kredit; // Kurangi saldo
+      await nasabah.save();
+    }
+
+    // Hapus kredit
+    transaksi.kredit = 0;
+    await transaksi.save();    
+
+    res.json({ message: 'Permintaan tarik tunai disetujui', tarikTunai });
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+}
+
 exports.setujuTarikTunai = async (req, res) => {
     const { id } = req.params;
   
@@ -138,4 +163,3 @@ exports.tolakTarikTunai = async (req, res) => {
       res.status(400).json({ message: error.message });
     }
   }
-
