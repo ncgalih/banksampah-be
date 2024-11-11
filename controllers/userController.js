@@ -26,6 +26,9 @@ exports.setorSampah = async (req, res) => {
     const nasabah = await Nasabah.findOne({ uid_rfid });
     if (!nasabah) return res.status(404).json({ error: 'Nasabah tidak ditemukan' });
 
+    if (kredit < 0) 
+      return res.status(400).json({ error: "Salah input" });
+    
     // Hitung saldo akhir
     const saldo_akhir = nasabah.saldo + kredit;
 

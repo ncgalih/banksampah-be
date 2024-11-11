@@ -1,3 +1,4 @@
+const { sendMailPenuh } = require('../funtions/sendMailPenuh');
 const Nasabah = require('../models/nasabah');
 const Setor = require('../models/setor');
 const Tarik = require('../models/tarik');
@@ -159,6 +160,17 @@ exports.tolakTarikTunai = async (req, res) => {
       ]);
       
       res.json(transaksiTarik);
+    } catch (error) {
+      res.status(400).json({ message: error.message });
+    }
+  }
+
+  exports.notifSampahPenuh = async (req, res) => {
+    const {tong_sampah} = req.params;
+
+    try {
+      sendMailPenuh(tong_sampah);
+      return res.json({message: "Email terkirim"});
     } catch (error) {
       res.status(400).json({ message: error.message });
     }
