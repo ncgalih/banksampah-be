@@ -1,4 +1,5 @@
 const { sendMailPenuh } = require('../funtions/sendMailPenuh');
+const { sendTelegramBot } = require('../funtions/sendTelegramBot');
 const Nasabah = require('../models/nasabah');
 const Setor = require('../models/setor');
 const Tarik = require('../models/tarik');
@@ -169,8 +170,8 @@ exports.tolakTarikTunai = async (req, res) => {
     const {tong_sampah} = req.params;
 
     try {
-      sendMailPenuh(tong_sampah);
-      return res.json({message: "Email terkirim"});
+      sendTelegramBot("Tong sampah "+tong_sampah+" penuh!")
+      return res.json({message: "Notf terkirim"});
     } catch (error) {
       res.status(400).json({ message: error.message });
     }

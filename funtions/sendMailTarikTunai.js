@@ -15,7 +15,7 @@ exports.sendMailTarikTunai = function(nasabah, nominal){
     subject: 'Permintaan Tarik Tunai Baru',
     text: `Permintaan tarik tunai baru:\n\nNama Nasabah: ${nasabah.nama}\nAlamat: ${nasabah.alamat}\nNominal: ${nominal}`
   };
-  
+  ``
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.error('Error sending email:', error);
