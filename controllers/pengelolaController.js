@@ -170,8 +170,8 @@ exports.tolakTarikTunai = async (req, res) => {
     const {tong_sampah} = req.params;
 
     try {
-      sendTelegramBot("Tong sampah "+tong_sampah+" penuh!")
-      return res.json({message: "Notf terkirim"});
+      await sendTelegramBot("Tong sampah "+tong_sampah+" penuh!");
+      return res.json({message: "Notif terkirim"});
     } catch (error) {
       res.status(400).json({ message: error.message });
     }

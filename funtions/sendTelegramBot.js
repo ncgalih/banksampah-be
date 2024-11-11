@@ -8,7 +8,5 @@ const chatId = process.env.CHAT_ID;
 
 exports.sendTelegramBot = function(message){
     const bot = new TelegramBot(token, { polling: true });
-    bot.sendMessage(chatId, message)
-    .then(() => console.log('Message sent successfully'))
-    .catch(error => console.error('Error sending message:', error));
+    return bot.sendMessage(chatId, message)
 }
