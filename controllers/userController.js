@@ -1,4 +1,5 @@
 const { sendMailTarikTunai } = require('../funtions/sendMailTarikTunai');
+const { sendTelegramBot } = require('../funtions/sendTelegramBot');
 const Nasabah = require('../models/nasabah');
 const Setor = require('../models/setor');
 const Tarik = require('../models/tarik');
@@ -148,7 +149,7 @@ exports.tarikTunai = async (req, res) => {
         }
         
         // Notifikasi ke pengelola
-        sendMailTarikTunai(nasabah, nominal);
+        sendTelegramBot( `Permintaan tarik tunai baru:\n\nNama Nasabah: ${nasabah.nama}\nAlamat: ${nasabah.alamat}\nNominal: ${nominal}`);
     
         res.status(201).json({ message: 'Permintaan tarik tunai berhasil diajukan', tarikTunai });
     } catch (error) {
