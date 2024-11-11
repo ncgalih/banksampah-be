@@ -149,7 +149,7 @@ exports.tarikTunai = async (req, res) => {
         }
         
         // Notifikasi ke pengelola
-        sendTelegramBot( `Permintaan tarik tunai baru:\n\nNama Nasabah: ${nasabah.nama}\nAlamat: ${nasabah.alamat}\nNominal: ${nominal}`);
+        sendTelegramBot( `Permintaan tarik tunai baru:\n\nNama Nasabah: ${nasabah.nama}\nAlamat: ${nasabah.alamat}\nNominal: ${nominal}\nBank: ${nasabah.bank}\nNo Rekening: ${nasabah.no_rekening}`);
     
         res.status(201).json({ message: 'Permintaan tarik tunai berhasil diajukan', tarikTunai });
     } catch (error) {
