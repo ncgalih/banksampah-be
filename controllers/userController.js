@@ -27,19 +27,19 @@ exports.setorSampah = async (req, res) => {
     const nasabah = await Nasabah.findOne({ uid_rfid });
     if (!nasabah) return res.status(404).json({ error: 'Nasabah tidak ditemukan' });
 
-    if (kredit < 0) 
-      return res.status(400).json({ error: "Salah input" });
-    
+    const newkredit = kredit > 0 ? kredit : 0;
+    const newberat = berat > 0 ? berat : 0;
+
     // Hitung saldo akhir
-    const saldo_akhir = nasabah.saldo + kredit;
+    const saldo_akhir = nasabah.saldo + newkredit;
 
     // Simpan transaksi setor
     const setor = new Setor({
       rfid_nasabah: uid_rfid,
       jenis_sampah,
-      berat,
+      berat: newberat,
       harga_jenis,
-      kredit,
+      kredit: newkredit,
       saldo: saldo_akhir
     });
     await setor.save();
